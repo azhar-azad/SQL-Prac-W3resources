@@ -1,0 +1,338 @@
+--SQL query from w3resources--
+--JOINS on HR Database--
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+1. Write a query in SQL to display the first name, last name, department number, and department name for each employee. 
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select first_name, last_name, E.department_ID, department_name
+from employees E
+inner join departments
+on 
+E.department_ID = departments.department_ID;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+2. Write a query in SQL to display the first and last name, department, city, and state province for each employee.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select E.first_name, E.last_name, D.department_name, L.city, L.state_province
+from (( employees E 
+    inner join departments D on E.department_ID = D.department_ID)
+    inner join locations L on D.LOCATION_ID = L.LOCATION_ID)
+    order by D.department_name;
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+3. Write a query in SQL to display the first name, last name, salary, and job grade for all employees.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select e.first_name, e.last_name, e.salary, j.grade_level
+from employees e 
+    inner join job_grades j on e.salary between j.lowest_sal and j.highest_sal; 
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+4. Write a query in SQL to display the first name, last name, department number and department name, for all employees for departments 80 or 40.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select E.FIRST_NAME, E.LAST_NAME, D.DEPARTMENT_ID, D.DEPARTMENT_NAME
+from employees E
+join departments D on E.DEPARTMENT_ID = D.DEPARTMENT_ID and E.DEPARTMENT_ID in (80, 40)
+order by E.LAST_NAME;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+5. Write a query in SQL to display those employees who contain a letter z to their first name and also display their last name, department, city, and state province.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    E.FIRST_NAME, 
+    E.LAST_NAME, 
+    D.DEPARTMENT_NAME, 
+    L.CITY, 
+    L.STATE_PROVINCE
+from 
+    ((employees E
+        join departments D on E.DEPARTMENT_ID = D.DEPARTMENT_ID )
+        join locations L on D.LOCATION_ID = L.LOCATION_ID )
+where
+    E.FIRST_NAME like '%z%';
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+6. Write a query in SQL to display all departments including those where does not have any employee.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select distinct
+    D.DEPARTMENT_NAME,
+    D.DEPARTMENT_ID,
+    E.FIRST_NAME,
+    E.LAST_NAME
+from
+    departments D
+        left join employees E
+            on D.DEPARTMENT_ID = E.DEPARTMENT_ID 
+order by D.DEPARTMENT_ID;  
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+7. Write a query in SQL to display the first and last name and salary for those employees who earn less than the employee earn whose number is 182.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    E1.FIRST_NAME, 
+    E1.LAST_NAME, 
+    E1.SALARY
+from
+    employees E1
+        join employees E2
+            on E1.SALARY < E2.SALARY and E2.EMPLOYEE_ID = 182; 
+			
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+8. Write a query in SQL to display the first name of all employees including the first name of their manager.
+--------------------------------------------------------------------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+9. Write a query in SQL to display the department name, city, and state province for each department		
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select distinct
+    D.DEPARTMENT_NAME, 
+    L.CITY,
+    L.STATE_PROVINCE
+from
+    departments D
+        join locations L
+            on D.LOCATION_ID = L.LOCATION_ID
+; 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+10. Write a query in SQL to display the first name, last name, department number and name, for all employees who have or have not any department.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    E.FIRST_NAME,
+    E.LAST_NAME,
+    D.DEPARTMENT_ID,
+    D.DEPARTMENT_NAME
+from
+    employees E
+    left join departments D
+        on E.DEPARTMENT_ID = D.DEPARTMENT_ID;   
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+12. Write a query in SQL to display the first name, last name, and department number for those employees who works in the same department as the employee who holds the last name as Taylor
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    E.FIRST_NAME,
+    E.LAST_NAME, 
+    E.DEPARTMENT_ID
+from
+    employees E
+    join employees S
+        on E.DEPARTMENT_ID = S.DEPARTMENT_ID
+        and S.LAST_NAME = 'Taylor';  
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+13. Write a query in SQL to display the job title, department name, full name (first and last name ) of employee, and starting date for all the jobs which started on or after 1st January, 1993 and ending with on or before 31 August, 1997.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    job_title,
+    DEPARTMENT_NAME,
+    FIRST_NAME || ' ' || LAST_NAME as EMPLOYEE_NAME,
+    start_date
+from
+    job_history 
+        join jobs using(JOB_ID)
+        join departments using(DEPARTMENT_ID)
+        join employees using(EMPLOYEE_ID)
+where
+    START_DATE >= '01-JAN-93' and START_DATE <= '31-AUG-97';
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+14. Write a query in SQL to display job title, full name (first and last name ) of employee, and the difference between maximum salary for the job and salary of the employee.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    job_title,
+    first_name || ' ' || last_name as Employee_name,
+    max_salary - salary as Difference_in_Salary
+from
+    jobs
+        join employees using(job_id);
+		
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+15. Write a query in SQL to display the name of the department, average salary and number of employees working in that department who got commission.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    department_name,
+    round(avg(salary), 2) as avg_salary,
+    count(commission_pct) as no_of_emp_with_com
+from
+    departments
+        join employees using(department_id)
+group by department_name;  
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+16. Write a query in SQL to display the full name (first and last name ) of employees, job title and the salary differences to their own job for those employees who is working in the department ID 80.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    first_name || ' ' || last_name as Employee_Name,
+    job_title,
+    max_salary - salary as Salary_Difference    
+from 
+    employees join jobs using(job_id)
+where
+    department_id = 80;
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+17. Write a query in SQL to display the name of the country, city, and the departments which are running there.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    department_name,
+    city,
+    country_name
+from 
+    departments join locations using(location_id)
+                join countries using(country_id);  
+				
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+18. Write a query in SQL to display department name and the full name (first and last name) of the manager
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    department_name,
+    first_name || ' ' || last_name as Manager_name
+from
+    departments join employees on DEPARTMENTS.MANAGER_ID = EMPLOYEES.EMPLOYEE_ID;    
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+19. Write a query in SQL to display job title and average salary of employees
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    job_title,
+    round(avg(salary), 2) as Average_salary
+from
+    jobs join employees using(job_id)
+group by job_title
+order by 2 desc;  
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+20. Write a query in SQL to display the details of jobs which was done by any of the employees who is presently earning a salary on and above 12000. 
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    JH.job_id, 
+    start_date, 
+    end_date, 
+    salary, 
+    EMPLOYEE_ID
+from 
+    job_history JH
+    join employees E using(employee_id)
+where 
+    salary >= 12000;
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+21.Write a query in SQL to display the country name, city, and number of those departments where at leaste 2 employees are working.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    country_name,
+    city,
+    count(department_id) as no_of_departments
+from
+    departments
+    join locations using(location_id)
+    join countries using(country_id)
+where
+    department_id in 
+    (
+        select 
+            department_id
+        from
+            employees
+        group by 
+            department_id
+        having 
+            count(department_id) >= 2 
+    )
+    group by country_name, city; 
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+22. Write a query in SQL to display the department name, full name (first and last name) of manager, and their city
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    D.DEPARTMENT_NAME,
+    E.FIRST_NAME || ' ' || E.LAST_NAME as FULL_NAME,
+    L.CITY
+from    
+    DEPARTMENTS D
+    join EMPLOYEES E on E.EMPLOYEE_ID = D.MANAGER_ID
+    join LOCATIONS L on D.LOCATION_ID = L.LOCATION_ID;
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+23. Write a query in SQL to display the employee ID, job name, number of days worked in for all those jobs in department 80.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    EMPLOYEE_ID,
+    JOB_TITLE,
+    END_DATE - START_DATE as NUM_OF_DAYS_WORKED
+from
+    JOBS  
+    join JOB_HISTORY  using(JOB_ID)
+where
+    DEPARTMENT_ID = 80  
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+24. Write a query in SQL to display the full name (first and last name), and salary of those employees who working in any department located in London
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    FIRST_NAME || ' ' || LAST_NAME as FULL_NAME,
+    SALARY
+from
+    EMPLOYEES 
+    join DEPARTMENTS using(DEPARTMENT_ID)
+    join LOCATIONS using(LOCATION_ID)
+where
+    CITY = 'London'  
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+25. Write a query in SQL to display full name(first and last name), job title, starting and ending date of last jobs for those employees with worked without a commission percentage.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    E.FIRST_NAME || ' ' || E.LAST_NAME as FULL_NAME,
+    J.JOB_TITLE,
+    H.*
+from
+    EMPLOYEES E
+    join (
+        select 
+            max(START_DATE),
+            max(END_DATE),
+            EMPLOYEE_ID
+        from
+            job_history
+        group by
+            employee_id        
+    ) H on E.EMPLOYEE_ID = H.EMPLOYEE_ID
+    join jobs J on E.JOB_ID = J.JOB_ID  
+where 
+    E.COMMISSION_PCT = 0;
+
+*****************	
+*** NOT WORKS ***	
+*****************
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+26. Write a query in SQL to display the department name and number of employees in each of the department.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select 
+    D.department_name,
+    X.*
+from
+    departments D 
+    join (
+        select
+            department_id,
+            count(employee_id) as NUM_OF_EMPLOYEE
+        from
+            employees
+        group by
+            department_id 
+    ) X on D.DEPARTMENT_ID = X.DEPARTMENT_ID    
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+27. Write a query in SQL to display the full name (firt and last name ) of employee with ID and name of the country presently where (s)he is working.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+select
+    E.EMPLOYEE_ID,
+    E.FIRST_NAME || ' ' || E.LAST_NAME as EULL_NAME,
+    C.COUNTRY_NAME
+from
+    EMPLOYEES E
+    join DEPARTMENTS D using (DEPARTMENT_ID)
+    join LOCATIONS L using (LOCATION_ID)
+    join COUNTRIES C on L.COUNTRY_ID = C.COUNTRY_ID 
+	
